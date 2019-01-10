@@ -1,1 +1,1 @@
-export const THRESHOLD = -250
+export const THRESHOLD = -200
