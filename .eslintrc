@@ -1,0 +1,13 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "extends": ["standard", "standard-jsx"],
+  "rules": {
+    "camelcase": "off",
+    "comma-dangle": ["error", "always-multiline"]
+  }
+}
