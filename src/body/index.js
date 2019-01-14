@@ -1,5 +1,6 @@
+import BScroll from 'better-scroll'
 import React, { PureComponent } from 'react'
-import { THRESHOLD } from '../assets/script/constant'
+import { DECELERATE, MOMENTUM_LIMIT_TIME, THRESHOLD } from '../assets/script/constant'
 import s from './index.less'
 
 function createTransform (node, value) {
@@ -18,7 +19,25 @@ function getTransformValue (node) {
   return +transform.match(/-?\d+(\.\d+)?/)[0] || 0
 }
 
+function scrollTo (dom, speed, limit) {
+  let transform = getTransformValue(dom)
+  const timer = window.setInterval(() => {
+    if (speed >= 0 || transform <= limit) {
+      window.clearInterval(timer)
+      return
+    }
+    let newPosition = transform + speed * 10
+    transform = newPosition
+    createTransform(dom, newPosition)
+    speed += DECELERATE
+  }, 20)
+
+  return timer
+}
+
 export default class Body extends PureComponent {
+  scrollTimer = null
+
   startX = undefined
   prevX = undefined
 
@@ -33,7 +52,6 @@ export default class Body extends PureComponent {
   started = false
 
   startPosition = undefined
-  touchEndPosition = undefined
 
   getRootNode = () => {
     const rootNode = document.querySelector('#scrolling-container')
@@ -55,17 +73,32 @@ export default class Body extends PureComponent {
 
   componentDidMount () {
     const rootNode = this.getRootNode()
+    const container = this.getBody()
+
+    rootNode.addEventListener(
+      'touchstart',
+      this.handleTouchStart
+    )
 
     rootNode.addEventListener(
       'touchmove',
       this.handleTouchMove,
       { passive: false }
     )
+
+    this.scroller = new BScroll(container, {
+      scrollY: true,
+      bounce: false,
+      bindToWrapper: true,
+    })
   }
 
   handleTouchStart = e => {
     const [pageX, pageY] = getTouchPosition(e)
     const container = this.getRootNode()
+    window.clearInterval(this.scrollTimer)
+
+    this.scrollTimer = null
 
     this.startX = pageX
     this.startY = pageY
@@ -108,20 +141,24 @@ export default class Body extends PureComponent {
     }
 
     if (needSetTransform) {
-      if (e.timeStamp !== this.prevTimeStamp) {
-        this.vY = (pageY - this.prevY) / (e.timeStamp - this.prevTimeStamp) * 1000
+      if (e.timeStamp - this.prevTimeStamp > MOMENTUM_LIMIT_TIME) {
+        this.vY = (pageY - this.prevY) / (e.timeStamp - this.prevTimeStamp)
         this.prevY = pageY
         this.prevTimeStamp = e.timeStamp
       }
       createTransform(container, newPosition)
     }
 
-    if (needPreventDefault) { e.preventDefault() }
+    if (needPreventDefault) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
   }
 
   handleTouchEnd = e => {
     const container = this.getRootNode()
-    this.touchEndPosition = getTransformValue(container)
+    this.scrollTimer = scrollTo(container, this.vY, THRESHOLD)
+
     document.querySelector('#watcher').innerHTML = this.vY
   }
 
@@ -136,7 +173,6 @@ export default class Body extends PureComponent {
       <div
         className={s.container}
         id='body'
-        {...touchEvents}
       >
         <div className={s.scroller}>
           <div>11</div>

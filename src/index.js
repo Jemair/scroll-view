@@ -7,7 +7,11 @@ import './assets/style/reset.less'
 
 export default class extends Component {
   render () {
-    return <div id='scrolling-container'>
+    return <div>
+      <div id='scrolling-container'>
+        <Head />
+        <Body />
+      </div>
       <div id='watcher' style={{
         position: 'fixed',
         background: '#000000',
@@ -18,8 +22,6 @@ export default class extends Component {
         right: '0',
         zIndex: 999,
       }} />
-      <Head />
-      <Body />
     </div>
   }
 }
