@@ -1,0 +1,22 @@
+.borderHalfPx(@borderTop: 1px, @borderRight: 1px, @borderBottom: 1px, @borderLeft: 1px, @borderColor: @border-color, @borderRadius: 0, @borderStyle: solid) {
+  position: relative;
+  &::before {
+    content: '';
+    pointer-events: none;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 200%;
+    height: 200%;
+    border-radius: @borderRadius * 2;
+    border: @borderTop @borderStyle @borderColor;
+    border-right-width: @borderRight;
+    border-bottom-width: @borderBottom;
+    border-left-width: @borderLeft;
+    transform-origin: 0 0;
+    transform: scale3d(.5, .5, 1);
+  }
+}

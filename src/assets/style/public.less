@@ -1,0 +1,71 @@
+html, body, :global(#demo) {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+:global {
+  /* 图片撑满元素 */
+  .cover-img {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 50%;
+    }
+  }
+
+  /* 左右两侧padding */
+  .wings {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* 文本段落 */
+  .text-box, .text-box * {
+    vertical-align: top;
+    word-break: break-all;
+    word-wrap: break-word;
+    text-align: justify;
+  }
+
+  .text-overflow {
+    /* 单行文本省略 */
+    &-1 {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 多行文本省略 */
+    &-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 多行文本省略 */
+    &-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  /* 覆盖在图片上的半透明蒙层 */
+  .cushion {
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+  }
+
+  .scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
